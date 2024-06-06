@@ -1,0 +1,10 @@
+services:
+  php:
+    container_name: symfony-doctrine-events-jvfd_php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"

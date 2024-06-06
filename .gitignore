@@ -50,3 +50,9 @@
 
 # Embedded web-server pid file
 /.web-server-pid
+
+# .idea PhpStorm
+.idea/
+
+# macOS .DS_Store
+*.DS_Store
