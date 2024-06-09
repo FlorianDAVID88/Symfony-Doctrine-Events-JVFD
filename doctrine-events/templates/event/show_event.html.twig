@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block body %}
+    <div class="container-fluid page-header py-3 mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center py-3 animated slideInDown">
+            <h1 class="display-3 text-white mb-4">{{ event.title }}</h1>
+            <p class="text-white mb-4">
+                {{ event.datetime.format('d/m/Y à H:i') }}, {{ event.place.name }}
+            </p>
+        </div>
+    </div>
+{% endblock %}
