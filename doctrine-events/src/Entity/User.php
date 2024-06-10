@@ -21,7 +21,7 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -30,12 +30,19 @@ class User
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'inscrits')]
     private Collection $events_insc;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'creator')]
+    private Collection $events_created;
 
     public function __construct()
     {
         $this->events_insc = new ArrayCollection();
+        $this->events_created = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,6 +118,36 @@ class User
     public function removeEventsInsc(Event $eventsInsc): static
     {
         $this->events_insc->removeElement($eventsInsc);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsCreated(): Collection
+    {
+        return $this->events_created;
+    }
+
+    public function addEventsCreated(Event $eventsCreated): static
+    {
+        if (!$this->events_created->contains($eventsCreated)) {
+            $this->events_created->add($eventsCreated);
+            $eventsCreated->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsCreated(Event $eventsCreated): static
+    {
+        if ($this->events_created->removeElement($eventsCreated)) {
+            // set the owning side to null (unless already changed)
+            if ($eventsCreated->getCreator() === $this) {
+                $eventsCreated->setCreator(null);
+            }
+        }
 
         return $this;
     }

@@ -18,6 +18,7 @@ class PlaceFixtures extends Fixture implements OrderedFixtureInterface
             ['name' => 'Boulevard Kelsch', 'address' => 'Boulevard Kelsch, 88400 Gérardmer', 'longitude' => '48.0732626', 'latitude' => '6.87823'],
             ['name' => 'Rue François Mitterrand', 'address' => '5 Rue François Mitterrand, 88400 Gérardmer', 'longitude' => '48.071325', 'latitude' => '6.872900'],
             ['name' => 'Casino JOA', 'address' => '3 Avenue de la Ville de Vichy, 88400 Gérardmer', 'longitude' => '48.0694185', 'latitude' => '6.8669045'],
+            ['name' => 'Lac de Gérardmer', 'address' => 'Quai de Waremme, 88400 Gérardmer', 'longitude' => '48.071476', 'latitude' => '6.864927'],
         ];
 
         foreach ($places as $data) {

@@ -40,9 +40,20 @@ class Event
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events_insc')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events_insc')]
+    private Collection $inscrits;
+
+    #[ORM\ManyToOne(inversedBy: 'events_created')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $creator = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->inscrits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +156,45 @@ class Event
         if ($this->users->removeElement($user)) {
             $user->removeEventsInsc($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getInscrits(): Collection
+    {
+        return $this->inscrits;
+    }
+
+    public function addInscrit(User $inscrit): static
+    {
+        if (!$this->inscrits->contains($inscrit)) {
+            $this->inscrits->add($inscrit);
+            $inscrit->addEventsInsc($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInscrit(User $inscrit): static
+    {
+        if ($this->inscrits->removeElement($inscrit)) {
+            $inscrit->removeEventsInsc($this);
+        }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): static
+    {
+        $this->creator = $creator;
 
         return $this;
     }

@@ -14,8 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class EventController extends AbstractController
 {
-    #[Route('/', name: 'list_events')]
-    public function listAllEvents(EventRepository $repository): Response
+    #[Route('/', name: 'app_home')]
+    public function app(EventRepository $repository): Response
     {
         return $this->render('base.html.twig', [
             'events' => $repository->findAll()
@@ -48,7 +48,7 @@ class EventController extends AbstractController
             $entityManager->persist($event);
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_events');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('event/new-event.html.twig', [
@@ -74,5 +74,13 @@ class EventController extends AbstractController
         $entityManager->persist($event);
         $entityManager->flush();
         return $this->redirectToRoute('list_events');
+    }
+
+    #[Route('/event/list', name: 'list_all_events')]
+    public function listAllEvents(EventRepository $repository): Response
+    {
+        return $this->render('event/list-events-search.html.twig', [
+            'events' => $repository->findAll()
+        ]);
     }
 }
