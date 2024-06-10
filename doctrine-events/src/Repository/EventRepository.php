@@ -16,6 +16,17 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    /**
+     * @return Event[] tous les events dans l'ordre de leur date
+     */
+    public function findAllOrderedByDate(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->orderBy('e.datetime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Event[] Returns an array of Event objects
     //     */

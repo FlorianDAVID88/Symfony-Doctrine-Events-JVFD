@@ -18,7 +18,7 @@ class EventController extends AbstractController
     public function app(EventRepository $repository): Response
     {
         return $this->render('base.html.twig', [
-            'events' => $repository->findAll()
+            'events' => $repository->findAllOrderedByDate()
         ]);
     }
 

@@ -12,14 +12,21 @@
             <a href="/event/list" class="nav-item nav-link">Tous les événements</a>
         </div>
         <div class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle btn btn-primary py-4 px-lg-4 rounded-0 d-flex align-items-center gap-1" data-bs-toggle="dropdown">
+            <a href="{% if app.user %}/profile{% else %}/login{% endif %}" class="nav-link dropdown-toggle btn btn-primary py-4 px-lg-4 rounded-0 d-flex align-items-center gap-1" data-bs-toggle="dropdown">
                 <i class="bi bi-person-circle profile-icon h-auto fs-4"></i>
-                Votre profil
+                {% if app.user %}
+                    {{ app.user.firstname }} {{ app.user.lastname }}
+                {% else %}
+                    Votre profil
+                {% endif %}
             </a>
-            <div class="dropdown-menu bg-light m-0">
-                <a href="/profile" class="dropdown-item" style="white-space: wrap;">Votre profil</a>
-                <a href="/user-inscriptions" class="dropdown-item" style="white-space: wrap;">Inscriptions effectuées</a>
-            </div>
+            {% if app.user %}
+                <div class="dropdown-menu bg-light m-0">
+                    <a href="/profile" class="dropdown-item" style="white-space: wrap;">Votre profil</a>
+                    <a href="/user-inscriptions" class="dropdown-item" style="white-space: wrap;">Inscriptions effectuées</a>
+                    <a href="/logout" class="dropdown-item" style="white-space: wrap;">Se déconnecter</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </nav>

@@ -6,10 +6,17 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements OrderedFixtureInterface
 {
     const USER_REFERENCE = 'user';
+    private $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
 
     public function load(ObjectManager $manager): void
     {
@@ -27,14 +34,14 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
 
             $loginName = strtolower($data['firstname'] . '.' . $data['lastname']);
             $email = strtolower($loginName) . '@email.fr';
-
             $user->setEmail($email);
-            $user->setPassword($loginName.'password');
+
+            $password = $this->passwordHasher->hashPassword($user, $loginName . 'password');
+            $user->setPassword($password);
+
             $manager->persist($user);
             $this->addReference(self::USER_REFERENCE . $email, $user);
         }
-
-        $manager->flush();
 
         $manager->flush();
     }
