@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tous les événements{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <h1 class="display-5 mb-5">Tous les événements</h1>
+        </div>
+        <div class="row g-4">
+            {% for event in events %}
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ event.id * 0.2 }}s"> <!-- +0.2s à chaque item -->
+                    <div class="service-item rounded d-flex h-100">
+                        <div class="service-text rounded p-5">
+                            <h4 class="mb-3">{{ event.title }}</h4>
+                            <p class="mb-4">
+                                {{ event.datetime.format('d/m/Y à H:i') }}
+                                <br>
+                                {{ event.place.name }}
+                            </p>
+                            <a class="btn btn-sm" href="/event-{{ event.id }}"><i class="fa fa-plus text-primary me-2"></i>En savoir +</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
