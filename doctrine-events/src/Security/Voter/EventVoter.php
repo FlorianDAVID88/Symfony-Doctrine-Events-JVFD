@@ -14,11 +14,13 @@ class EventVoter extends Voter
     public const VIEW = 'POST_VIEW';
     public const DELETE = 'POST_DELETE';
 
+    public const USER_DESINSCRIPTION = 'POST_DESINSCRIPTION';
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::ADD, self::EDIT, self::VIEW, self::DELETE])
+        return in_array($attribute, [self::ADD, self::EDIT, self::VIEW, self::DELETE, self::USER_DESINSCRIPTION])
             && $subject instanceof Event;
     }
 
@@ -48,6 +50,10 @@ class EventVoter extends Voter
                     return $subject->isPublic() || $user instanceof UserInterface;
                 }
                 return false;
+
+            case self::USER_DESINSCRIPTION:
+                return $subject instanceof Event && $user instanceof UserInterface;
+
         }
 
         return false;

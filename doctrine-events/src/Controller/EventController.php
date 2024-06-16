@@ -102,7 +102,7 @@ class EventController extends AbstractController
     {
         $entityManager = $managerRegistry->getManager();
         $event = $repository->find($id);
-        $this->denyAccessUnlessGranted(EventVoter::EDIT, $event);
+        $this->denyAccessUnlessGranted(EventVoter::ADD, $event);
 
         $nb_places_dispo = $this->eventService->calculateAvailablePlaces($event);
 
@@ -172,16 +172,14 @@ class EventController extends AbstractController
     {
         $entityManager = $managerRegistry->getManager();
         $event = $repository->find($id);
-        $this->denyAccessUnlessGranted(EventVoter::EDIT, $event);
+        $this->denyAccessUnlessGranted(EventVoter::USER_DESINSCRIPTION, $event);
 
         $currentUser = $security->getUser();
 
         if(!$event) {
             throw $this->createNotFoundException('Aucun événement référencé avec l\'id '.$id);
-        } else if(!($currentUser instanceof User)) {
-            throw $this->createAccessDeniedException();
-        } else {
-            if($currentUser->getEventsInsc()->containsKey($id)) {
+        } else if ($currentUser instanceof User) {
+            if($currentUser->getEventsInsc()->contains($event)) {
                 $event->removeInscrit($currentUser);
                 $entityManager->persist($event);
                 $entityManager->flush();
