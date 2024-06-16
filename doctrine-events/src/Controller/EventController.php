@@ -8,6 +8,7 @@ use App\Form\EventFormType;
 use App\Repository\EventRepository;
 use App\Security\Voter\EventVoter;
 use App\Service\EventService;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,10 +22,12 @@ use Twig\Error\RuntimeError;
 class EventController extends AbstractController
 {
     private $eventService;
+    private $mailerService;
 
-    public function __construct(EventService $eventService)
+    public function __construct(EventService $eventService, MailerService $mailerService)
     {
         $this->eventService = $eventService;
+        $this->mailerService = $mailerService;
     }
 
     #[Route('/', name: 'app_home')]
@@ -110,10 +113,11 @@ class EventController extends AbstractController
                 throw $this->createNotFoundException(
                     'Aucun événement référencé avec l\'id '.$id
                 );
-            } else {
+            } else if ($currentUser instanceof User) {
                 $event->addInscrit($currentUser);
                 $entityManager->persist($event);
                 $entityManager->flush();
+                $this->mailerService->sendEmailForInscription($currentUser, $event);
             }
         }
 
@@ -145,7 +149,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/event-{id}/delete', name: 'event_delete')]
-    public function deleteEvent(int $id, EventRepository $repository, ManagerRegistry $managerRegistry): Response
+    public function deleteEvent(int $id, EventRepository $repository, ManagerRegistry $managerRegistry, Security $security): Response
     {
         $entityManager = $managerRegistry->getManager();
         $event = $repository->find($id);
@@ -157,6 +161,7 @@ class EventController extends AbstractController
 
         $entityManager->remove($event);
         $entityManager->flush();
+        $this->mailerService->sendEmailForAnnulation($security->getUser(), $event);
 
         return $this->redirectToRoute('app_home');
     }
