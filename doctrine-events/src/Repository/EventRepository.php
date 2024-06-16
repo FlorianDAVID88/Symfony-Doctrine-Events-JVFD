@@ -19,36 +19,60 @@ class EventRepository extends ServiceEntityRepository
     /**
      * @return Event[] tous les events dans l'ordre de leur date
      */
-    public function findAllOrderedByDate(): array
+    public function findNextEventsByDate(bool $isPublic): array
     {
-        return $this->createQueryBuilder('e')
-            ->orderBy('e.datetime', 'ASC')
+        $qb = $this->createQueryBuilder('e');
+
+        if ($isPublic === true) {
+            $qb->andWhere('e.is_public = :isPublic')
+                ->setParameter('isPublic', true);
+        }
+
+        return $qb->orderBy('e.datetime', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
-    //    /**
-    //     * @return Event[] Returns an array of Event objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getFromFilters($name = null, $dateMin = null, $dateMax = null, $isPublic = null, $isPrivate = null): array
+    {
+        $qb = $this->createQueryBuilder('e');
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($name) {
+            $qb->andWhere('e.title LIKE :name')
+                ->setParameter('name', '%' . $name . '%');
+        }
+
+        if ($dateMin && $dateMax) {
+            $qb->andWhere('e.datetime BETWEEN :start AND :end')
+                ->setParameter('start', $dateMin)
+                ->setParameter('end', $dateMax);
+        } elseif ($dateMin) {
+            $qb->andWhere('e.datetime >= :start')
+                ->setParameter('start', $dateMin);
+        } elseif ($dateMax) {
+            $qb->andWhere('e.datetime <= :end')
+                ->setParameter('end', $dateMax);
+        }
+
+        if ($isPublic === 'on') {
+            $qb->andWhere('e.is_public = TRUE');
+        }
+
+        if ($isPrivate === 'on') {
+            $qb->andWhere('e.is_public = FALSE');
+        }
+
+        $qb->orderBy('e.datetime', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllPublicEvents(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.is_public = TRUE')
+            ->orderBy('e.datetime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

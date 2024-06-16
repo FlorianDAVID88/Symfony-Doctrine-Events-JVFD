@@ -5,37 +5,11 @@
 {% block body %}
 <div class="container mt-5">
     <h1>Création d'événement</h1>
-    <form action="{{ path('event_create') }}" method="post">
+    <form method="post">
         {{ form_start(form) }}
+        {{ form_widget(form) }}
 
-        <div class="form-group">
-            {{ form_label(form.title, 'Nom de l\'événement') }}
-            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_row(form.description) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.datetime, 'Date et heure de l\'événement') }}
-            {{ form_widget(form.datetime, {'attr': {'class': 'form-control'}}) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.place, 'Lieu de l\'événement') }}
-            {{ form_widget(form.place, {'attr': {'class': 'form-control'}}) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.nb_max_users, 'Nombre de participants maximum') }}
-            {{ form_widget(form.nb_max_users, {'attr': {'class': 'form-control'}}) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_row(form.is_public) }}
-        </div>
-        {{ form_row(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+        <button type="submit" class="btn btn-primary">Créer</button>
         {{ form_end(form) }}
     </form>
 </div>

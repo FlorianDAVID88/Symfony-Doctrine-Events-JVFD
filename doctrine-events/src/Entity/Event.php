@@ -28,17 +28,11 @@ class Event
     private ?int $nb_max_users = null;
 
     #[ORM\Column]
-    private ?bool $is_public = null;
+    public ?bool $is_public = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Place $place = null;
-
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events_insc')]
-    private Collection $users;
 
     /**
      * @var Collection<int, User>
@@ -52,7 +46,6 @@ class Event
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->inscrits = new ArrayCollection();
     }
 
@@ -129,33 +122,6 @@ class Event
     public function setPlace(?Place $place): static
     {
         $this->place = $place;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addEventsInsc($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeEventsInsc($this);
-        }
 
         return $this;
     }

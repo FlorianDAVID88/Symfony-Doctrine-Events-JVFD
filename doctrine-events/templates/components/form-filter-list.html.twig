@@ -1,0 +1,27 @@
+<form method="get" action="{{ path('list_events') }}" class="d-flex gap-2 align-items-center justify-content-center pb-5">
+    <div class="form-group">
+        <label for="category">Catégorie :</label>
+        <input type="text" id="name" class="form-control" name="name" value="{{ filters.get('name') }}">
+    </div>
+    <div class="form-group">
+        <label for="date_min">Date Min :</label>
+        <input type="datetime-local" id="date_min" class="form-control" name="date_min" value="{{ filters.get('date_min') }}">
+    </div>
+    <div class="form-group"> - </div>
+    <div class="form-group">
+        <label for="date_max">Date Max :</label>
+        <input type="datetime-local" id="date_max" class="form-control" name="date_max" value="{{ filters.get('date_max') }}">
+    </div>
+    {% if app.user %}
+        <div class="form-group">
+            <label for="public">Événement public</label>
+            <input type="checkbox" id="public" class="form-check-input" name="public" {% if filters.get('public') is same as('on') %}checked="checked"{% endif %}>
+
+            <label for="private">Événement privé</label>
+            <input type="checkbox" id="private" class="form-check-input" name="private" {% if filters.get('private') is same as('on') %}checked="checked"{% endif %}>
+        </div>
+    {% endif %}
+    <div>
+        <button type="submit" class="btn btn-primary text-white">Filtrer</button>
+    </div>
+</form>

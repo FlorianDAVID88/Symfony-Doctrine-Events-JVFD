@@ -11,13 +11,39 @@
             </p>
         </div>
     </div>
-    <iframe
-            src="https://www.google.com/maps?q={{ event.place.address }}&output=embed"
-            id="maps-iframe"
-            width="600"
-            height="450"
-            style="border:0;"
-            allowfullscreen=""
-            loading="lazy">
-    </iframe>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <iframe
+                        src="https://www.google.com/maps?q={{ event.place.address }}&output=embed"
+                        id="maps-iframe"
+                        width="600"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy">
+                </iframe>
+            </div>
+            <div class="col-6">
+                {{ event.description }}
+                <br>
+                {{ event.getNbMaxUsers() }} places à distribuer
+                <br>
+                Créateur de l'événement : {{ event.creator.firstname }} {{ event.creator.lastname }}
+                <br>
+                {% if event.getNbMaxUsers() - event.inscrits|length <= 0 %}
+
+                {% elseif app.user %}
+                    Il reste {{ event.getNbMaxUsers() - event.inscrits|length }} places
+                    <br>
+                    <button class="btn btn-lg btn-primary" type="button">
+                        <a href="/event-{{ event.id }}/add-user">S'inscire à l'événement</a>
+                    </button>
+                    {% if app.user.id == event.creator.id %}
+                        {% include 'components/button-delete-event.html.twig' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
